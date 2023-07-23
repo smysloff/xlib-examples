@@ -10,32 +10,32 @@ PROJECTS := simple_window \
 all: clean build
 
 build: clean
-	@$(CC) simple_window.c  $(CFLAGS) $(MFLAGS) -lX11 -o simple_window
-	@$(CC) event_handling.c $(CFLAGS) $(MFLAGS) -lX11 -o event_handling
-	@$(CC) create_window.c  $(CFLAGS) $(MFLAGS) -lX11 -o create_window
-	@$(CC) font_drawing.c   $(CFLAGS) $(MFLAGS) -lX11 -o font_drawing
+	@$(CC) src/simple_window.c  $(CFLAGS) $(MFLAGS) -lX11 -o simple_window
+	@$(CC) src/event_handling.c $(CFLAGS) $(MFLAGS) -lX11 -o event_handling
+	@$(CC) src/create_window.c  $(CFLAGS) $(MFLAGS) -lX11 -o create_window
+	@$(CC) src/font_drawing.c   $(CFLAGS) $(MFLAGS) -lX11 -o font_drawing
 
 clean:
 	@$(RM) $(PROJECTS)
 
 simple_window:
 	@$(RM) $@
-	@$(CC) $@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
 	@./$@
 
 event_handling:
 	@$(RM) $@
-	@$(CC) $@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
 	@./$@
 
 create_window:
 	@$(RM) $@
-	@$(CC) $@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
 	@./$@
 
 font_drawing:
 	@$(RM) $@
-	@$(CC) $@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
 	@./$@
 
 .PHONY: all build clean $(PROJECTS)
