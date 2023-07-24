@@ -1,10 +1,19 @@
 #include <X11/Xlib.h>
 #include <unistd.h> // sleep()
+#include <stdio.h>  // fprintf()
 
 int
 main(void)
 {
 	Display* display = XOpenDisplay(NULL);          // open connection
+
+	if (!display)
+	{
+		fprintf(stderr, "error:"
+			"	Can't open connection to display server."
+			" Probably X server is not started.\n");
+		return 1;
+	}
 
 	Window window = XCreateSimpleWindow(display,
 		DefaultRootWindow(display), 							    // parent window

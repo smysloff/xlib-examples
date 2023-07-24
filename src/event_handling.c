@@ -1,5 +1,5 @@
 #include <X11/Xlib.h>
-#include <stdio.h> // printf() puts()
+#include <stdio.h> // fprintf() printf() puts()
 
 #ifdef __APPLE__
 	#define KEY_ESCAPE 61
@@ -11,6 +11,14 @@ int
 main(void)
 {
 	Display* display = XOpenDisplay(NULL);
+
+	if (!display)
+	{
+		fprintf(stderr, "error:"
+			"	Can't open connection to display server."
+			" Probably X server is not started.\n");
+		return 1;
+	}
 
 	Window window = XCreateSimpleWindow(display,
 		DefaultRootWindow(display),

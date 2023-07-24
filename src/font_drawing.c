@@ -1,6 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> // XSizeHints
-#include <stdio.h>     // snprintf()
+#include <stdio.h>     // fprintf() snprintf()
 #include <string.h>    // strlen()
 
 #define WINDOW_TITLE  "X11 Window Example"
@@ -70,6 +70,15 @@ main(void)
 {
 	// init basics
 	display = XOpenDisplay(NULL);
+
+	if (!display)
+	{
+		fprintf(stderr, "error:"
+			"	Can't open connection to display server."
+			" Probably X server is not started.\n");
+		return 1;
+	}
+
 	screen = DefaultScreen(display);
 	black_color = BlackPixel(display, screen);
 	white_color = WhitePixel(display, screen);
