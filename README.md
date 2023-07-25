@@ -57,6 +57,15 @@ make font_drawing
 Простой пример, демонстрирующий базовую работу со шрифтами.
 
 
+* ### Draw Square
+
+```sh
+make draw_square
+```
+
+Пример, в котором в окне рисуется вращающийся прямоугольник, вращением которого можно управлять клавишами *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
+
+
 ## Полезные ссылки
 * [Xorg Documentation](https://www.x.org/releases/current/doc/index.html)
 * [Tronche's The Xlib Programming Manual](https://tronche.com/gui/x/xlib/)
