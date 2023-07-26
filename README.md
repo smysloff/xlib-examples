@@ -1,24 +1,29 @@
-# XLib - первые шаги
+# XLib - First Steps
 
-Примеры кода простых приложений, использующих **Xlib**, для работы с окнами в Unix-подобных операционных системах с **X Window System**.
-
-
-## Описание
-
-**X Window System** - это клиент-серверная система управления отображением окон для растровых дисплеев, распространенная в операционных системах Unix-подобного типа. X предоставляет основу для графической среды (GUI), отвечая за рисование и перемещение окон на экране, а так же взаимодействие с мышью и клавиатурой.
-
-**X11** - это название текущей версии протокола **X Window System**.
-
-**Xlib (X Window System library)** - это библиотека, являющаяся частью **X Window System** и реализующая **X11**. Она предоставляет доступ к низкоуровневым функциям графической системы, позволяя создавать приложения, работающие непосредственно с отображением окон и графическим содержимым экрана.
+Code examples for simple applications using **Xlib** to work with windows on Unix-like operating systems with **X Window System**.
 
 
-## Примеры кода
+# Translations
 
-Здесь собрано несколько примеров того, как пользоваться библиотекой **Xlib**. Эти примеры постепенно раскрывают базовые понятия работы с графическим сервером и решают типичные задачи построения графического приложения.
+* [русский](https://github.com/smysloff/xlib-examples/blob/master/README.ru.md)
 
-Все примеры можно скомпилировать одной командой: `make`.
 
-Каждый пример можно скомпилировать и запустить отдельно. Примеры и способ их запуска подробно описаны ниже.
+# Description
+
+**X Window System** is a client-server system for managing the display of windows for raster displays, widely used in Unix-like operating systems. **X** provides the basis for a graphical environment (GUI), handling the drawing and movement of windows on the screen, as well as interaction with the mouse and keyboard.
+
+**X11** is the name of the current version of the **X Window System protocol**.
+
+**Xlib (X Window System library)** is a library that is part of the **X Window System** and implements **X11**. It provides access to low-level graphics system functions, allowing applications to work directly with window display and screen graphics content.
+
+
+#Code Examples
+
+Here are some examples of how to use the **Xlib library**. These examples gradually reveal the basic concepts of working with a graphics server and solve typical tasks of building a graphical application.
+
+All examples can be compiled with one command: `make`.
+
+Each example can be compiled and run separately. The examples and how to run them are described in detail below.
 
 
 * ### Simple Window
@@ -27,7 +32,7 @@
 make simple_window
 ```
 
-Минималистичный пример, показывающий, как подключиться к графическому серверу и открыть окно при помощи функции **XCreateSimpleWindow()**.
+Minimalistic example showing how to connect to the graphics server and open a window using the **XCreateSimpleWindow()** function.
 
 
 * ### Event Handling
@@ -36,7 +41,7 @@ make simple_window
 make event_handling
 ```
 
-Минималистичный пример, показывающий, как обрабатывать простые события. В данном случае окно закрывается по нажатию *Escape*.
+Minimalistic example showing how to handle simple events. In this case, the window is closed when the *Escape* key is pressed.
 
 
 * ### Create Window
@@ -45,7 +50,7 @@ make event_handling
 make create_window
 ```
 
-Простой пример, демонстрирующий создание окна функцией **XCreateWindow()**, установку заголовка окна, рисование квадрата в нем и обработку закрытия окна в оконном менеджере.
+Simple example demonstrating creating a window using the **XCreateWindow()** function, setting the window title, drawing a square in it, and handling window closing in the window manager.
 
 
 * ### Font Drawing
@@ -54,7 +59,7 @@ make create_window
 make font_drawing
 ```
 
-Простой пример, демонстрирующий базовую работу со шрифтами.
+Simple example demonstrating basic work with fonts.
 
 
 * ### Draw Square
@@ -63,10 +68,10 @@ make font_drawing
 make draw_square
 ```
 
-Пример, в котором в окне рисуется вращающийся прямоугольник, вращением которого можно управлять клавишами *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
+Example in which a rotating rectangle is drawn in a window, which rotation can be controlled using the keys *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
 
 
-## Полезные ссылки
+## Useful links
 * [Xorg Documentation](https://www.x.org/releases/current/doc/index.html)
 * [Tronche's The Xlib Programming Manual](https://tronche.com/gui/x/xlib/)
 * [Разработка программ для системы X Window](http://www.asvcorp.ru/tech/linux/xwinprg/index.html)
@@ -75,6 +80,6 @@ make draw_square
 * [Основы программирования в системе X Window](https://www.opennet.ru/docs/RUS/xtoolkit/x-2.html)
 
 
-## Лицензия
+## License
 
 [GNU GPL-3.0](https://raw.githubusercontent.com/smysloff/xlib-examples/master/LICENSE)

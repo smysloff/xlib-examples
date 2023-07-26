@@ -2,8 +2,9 @@
 
 main.c
 test.c
+a.out
 
-simple_window
-event_handling
-create_window
-font_drawing
+/simple_window
+/event_handling
+/create_window
+/font_drawing
