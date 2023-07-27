@@ -1,64 +1,63 @@
 #include <X11/Xlib.h>
 #include <stdio.h> // fprintf() printf() puts()
 
-#ifdef __APPLE__
-	#define KEY_ESCAPE 61
+#ifdef __MACOS__
+  #define KEY_ESCAPE 61
 #else
-	#define KEY_ESCAPE 9
+  #define KEY_ESCAPE 9
 #endif
 
-int
-main(void)
+int main(void)
 {
-	Display* display = XOpenDisplay(NULL);
+  Display* display = XOpenDisplay(NULL);
 
-	if (!display)
-	{
-		fprintf(stderr, "error:"
-			"	Can't open connection to display server."
-			" Probably X server is not started.\n");
-		return 1;
-	}
+  if (!display)
+  {
+    fprintf(stderr, "error:"
+      "	Can't open connection to display server."
+      " Probably X server is not started.\n");
+    return 1;
+  }
 
-	Window window = XCreateSimpleWindow(display,
-		DefaultRootWindow(display),
-		0, 0, 720, 480, 0,
-		BlackPixel(display, DefaultScreen(display)),
-		BlackPixel(display, DefaultScreen(display)));
+  Window window = XCreateSimpleWindow(display,
+    DefaultRootWindow(display),
+    0, 0, 720, 480, 0,
+    BlackPixel(display, DefaultScreen(display)),
+    BlackPixel(display, DefaultScreen(display)));
 
-	long event_mask = ExposureMask | KeyPressMask; // select events
-	XSelectInput(display, window, event_mask);     // for handling
+  long event_mask = ExposureMask | KeyPressMask; // select events
+  XSelectInput(display, window, event_mask);     // for handling
 
-	XMapWindow(display, window);
+  XMapWindow(display, window);
 	
-	XEvent event;
+  XEvent event;
 
-	for (int loop = 1; loop; )
-	{
-		XNextEvent(display, &event);
+  for (int loop = 1; loop; )
+  {
+    XNextEvent(display, &event);
 
-		switch (event.type)
-		{
-			case Expose:
-			{
-				puts("window expose");
-				break;
-			}
+    switch (event.type)
+    {
+      case Expose:
+      {
+        puts("window expose");
+        break;
+      }
 
-			case KeyPress:
-			{
-				printf("key: %d\n", event.xkey.keycode);
-				if (event.xkey.keycode == KEY_ESCAPE)
-					loop = 0;
-				break;
-			}
+      case KeyPress:
+      {
+        printf("key: %d\n", event.xkey.keycode);
+        if (event.xkey.keycode == KEY_ESCAPE)
+          loop = 0;
+        break;
+      }
 
-		}
-	}
+    }
+  }
 
-	puts("window close");
+  puts("window close");
 
-	XUnmapWindow(display, window);
-	XDestroyWindow(display, window);
-	XCloseDisplay(display);
+  XUnmapWindow(display, window);
+  XDestroyWindow(display, window);
+  XCloseDisplay(display);
 }

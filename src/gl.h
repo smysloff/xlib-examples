@@ -18,8 +18,8 @@ typedef unsigned long GL_Color;
 
 typedef struct GL_ColorMap
 {
-	GL_Color black;
-	GL_Color white;
+  GL_Color black;
+  GL_Color white;
 } GL_ColorMap;
 
 typedef struct GL_Clock
@@ -39,18 +39,18 @@ typedef struct GL_FPS
 
 typedef struct GL_t
 {
-	Display* display;
-	int screen;
-	Window root;
-	Window window;
-	GC gc;
-	XEvent event;
+  Display* display;
+  int screen;
+  Window root;
+  Window window;
+  GC gc;
+  XEvent event;
   XFontStruct* font;
   GL_Clock time;
   GL_FPS fps;
-	GL_ColorMap color;
-	unsigned loop;
-	unsigned hidden;
+  GL_ColorMap color;
+  unsigned loop;
+  unsigned hidden;
   void (*ExposeHandler)(void);
   void (*KeyPressHandler)(unsigned keycode);
   void (*KeyReleaseHandler)(unsigned keycode);
@@ -65,7 +65,7 @@ extern GL_t GL;
 
 #define GetDeltaTime(prev_timespec_ptr, curr_timespec_ptr) \
   (((curr_timespec_ptr)->tv_sec - (prev_timespec_ptr)->tv_sec) * BILLION \
-   + (curr_timespec_ptr)->tv_nsec - (prev_timespec_ptr)->tv_nsec)
+    + (curr_timespec_ptr)->tv_nsec - (prev_timespec_ptr)->tv_nsec)
 
 #define NormalizeDegrees(angle) \
   ((angle < 0) ? ((angle) + 360) \
