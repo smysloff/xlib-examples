@@ -1,51 +1,41 @@
 #ifndef __GL_H__
 #define __GL_H__
 
+#include "gl_keys.h"
+
 #include <X11/Xlib.h>
+
+#include <time.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#ifdef __APPLE__
-	#define KEY_ESCAPE 61
-	#define KEY_Q      20
-	#define KEY_W      21
-	#define KEY_E      22
-	#define KEY_A      8
-	#define KEY_S      9
-	#define KEY_D      10
-	#define KEY_UP     134
-	#define KEY_LEFT   131
-	#define KEY_DOWN   133
-	#define KEY_RIGHT  132
-	#define KEY_SPACE  57
-	#define KEY_RETURN 44
-#else
-	#define KEY_ESCAPE 9
-	#define KEY_Q      24
-	#define KEY_W      25
-	#define KEY_E      26
-	#define KEY_A      38
-	#define KEY_S      39
-	#define KEY_D      40
-	#define KEY_UP     111
-	#define KEY_LEFT   113
-	#define KEY_DOWN   116
-	#define KEY_RIGHT  114
-	#define KEY_SPACE  65
-	#define KEY_RETURN 36
-#endif
+#define BILLION 1000000000
 
-#define GL_GetSizeOfArray(array) \
-	(sizeof(array) / sizeof(*array))
+typedef struct timespec GL_Time;
+typedef XPoint GL_Point;
+typedef unsigned long GL_Color;
 
-typedef unsigned long Color_t;
-typedef XPoint Point_t;
-
-typedef struct ColorMap_t
+typedef struct GL_ColorMap
 {
-	Color_t black;
-	Color_t white;
-} ColorMap_t;
+	GL_Color black;
+	GL_Color white;
+} GL_ColorMap;
+
+typedef struct GL_Clock
+{
+  unsigned long frame_rate;
+  unsigned long frame_time;
+  GL_Time previous;
+  GL_Time current;
+} GL_Clock;
+
+typedef struct GL_FPS
+{
+  GL_Time previous;
+  unsigned long value;
+  char text[32];
+} GL_FPS;
 
 typedef struct GL_t
 {
@@ -55,48 +45,65 @@ typedef struct GL_t
 	Window window;
 	GC gc;
 	XEvent event;
-	ColorMap_t color;
-	int loop;
-	int hidden;
+  XFontStruct* font;
+  GL_Clock time;
+  GL_FPS fps;
+	GL_ColorMap color;
+	unsigned loop;
+	unsigned hidden;
+  void (*ExposeHandler)(void);
+  void (*KeyPressHandler)(unsigned keycode);
+  void (*KeyReleaseHandler)(unsigned keycode);
+  void (*UpdateState)(void);
+  void (*RenderFrame)(void);
 } GL_t;
 
 extern GL_t GL;
 
-void
-GL_Init(void);
+#define GetSizeOfArray(array) \
+  (sizeof(array) / sizeof(*(array)))
 
-void
-GL_Quit(void);
+#define GetDeltaTime(prev_timespec_ptr, curr_timespec_ptr) \
+  (((curr_timespec_ptr)->tv_sec - (prev_timespec_ptr)->tv_sec) * BILLION \
+   + (curr_timespec_ptr)->tv_nsec - (prev_timespec_ptr)->tv_nsec)
 
-void
-GL_CreateWindow(
-	const unsigned short width,
-	const unsigned short height,
-	const Color_t background_color
-);
+#define NormalizeDegrees(angle) \
+  ((angle < 0) ? ((angle) + 360) \
+    : ((angle) >= 360) ? ((angle) - 360) \
+      : (angle))
 
-void
-GL_SetForeground(const Color_t color);
+#define NormalizeRadians(angle) \
+  ((angle < 0) ? ((angle) + M_2_PI) \
+    : ((angle) >= M_2_PI) ? ((angle) - M_2_PI) \
+      : (angle))
 
-void
-GL_SetWindowTitle(const char* restrict title);
+void GL_Init(void);
+void GL_Quit(void);
+void GL_Loop(void (*UpdateState)(void), void (*RenderFrame)(void));
 
-void
-GL_ClearWindow(void);
+void GL_StartLoop(void);
+void GL_StopLoop(void);
 
-void
-GL_DrawPoint(const int x, const int y);
+void GL_CreateWindow(
+  unsigned short width, unsigned short height, GL_Color background_color);
 
-void
-GL_DrawPoints(Point_t* points, const int count);
+void GL_SetExposeHandler(void (*handler)(void));
+void GL_SetKeyPressHandler(void (*handler)(unsigned keycode));
+void GL_SetKeyReleaseHandler(void (*handler)(unsigned keycode));
 
-void
-GL_DrawLine(
-	const int x1, const int y1,
-	const int x2, const int y2
-);
+void GL_SetFrameRate(unsigned long frame_rate);
+void GL_SetFont(const char* fontname);
+void GL_SetForeground(GL_Color color);
+void GL_SetWindowTitle(const char* title);
+void GL_ClearWindow(void);
+void GL_SetWindowVisible(void);
+void GL_SetWindowHidden(void);
 
-void
-GL_DrawLines(Point_t* points, const int count);
+void GL_DrawText(const char* text, int x, int y);
+void GL_DrawFPS(void);
+
+void GL_DrawLine(int x1, int y1, int x2, int y2);
+void GL_DrawLines(GL_Point* points, int count);
+void GL_DrawRectangle(int x, int y, unsigned width, unsigned height);
 
 #endif
