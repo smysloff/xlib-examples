@@ -62,10 +62,10 @@ make font_drawing
 Простой пример, демонстрирующий базовую работу со шрифтами.
 
 
-* ### Draw Square
+* ### Draw Rect
 
 ```sh
-make draw_square
+make draw_rect
 ```
 
 Пример, в котором в окне рисуется вращающийся прямоугольник, вращением которого можно управлять клавишами *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.

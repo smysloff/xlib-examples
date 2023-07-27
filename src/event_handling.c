@@ -15,7 +15,7 @@
 #include <X11/Xlib.h>
 #include <stdio.h> // fprintf() printf() puts()
 
-#ifdef __MACOS__
+#ifdef __APPLE__
   #define KEY_ESCAPE 61
 #else
   #define KEY_ESCAPE 9

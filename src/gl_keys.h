@@ -15,7 +15,7 @@
 #ifndef __GL_KEYS_H__
 #define __GL_KEYS_H__
 
-#ifdef __MACOS__
+#ifdef __APPLE__
   #define KEY_ESCAPE 61
   #define KEY_Q      20
   #define KEY_W      21

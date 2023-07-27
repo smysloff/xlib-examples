@@ -5,7 +5,7 @@
 //  _/ \_ |__/ _|_ |__/      |___ _/ \_ |  | |   | |    |__/ |___ \__/  //
 //                                                                      //
 // ==================================================================== //
-// file:    draw_square.c                                               //
+// file:    draw_rect.c                                                 //
 // author:  Alexander Smyslov                                           //
 // e-mail:  kokoc.smyslov@yandex.ru                                     //
 // website: https://github.com/smysloff/xlib-examples                   //

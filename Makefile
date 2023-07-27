@@ -7,43 +7,43 @@ EXAMPLES := simple_window \
 	event_handling \
 	create_window \
 	font_drawing \
-	draw_square
+	draw_rect
 
 all: clean build
 
 build: clean
-	@$(CC) src/simple_window.c $(CFLAGS) $(MFLAGS) -lX11 -o simple_window
-	@$(CC) src/event_handling.c $(CFLAGS) $(MFLAGS) -lX11 -o event_handling
-	@$(CC) src/create_window.c $(CFLAGS) $(MFLAGS) -lX11 -o create_window
-	@$(CC) src/font_drawing.c $(CFLAGS) $(MFLAGS) -lX11 -o font_drawing
-	@$(CC) src/draw_square.c $(LIBGL) $(CFLAGS) $(MFLAGS) -lX11 -o draw_square -lm
+	@$(CC) src/simple_window.c $(CFLAGS) -o simple_window $(MFLAGS) -lX11 
+	@$(CC) src/event_handling.c $(CFLAGS) -o event_handling $(MFLAGS) -lX11 
+	@$(CC) src/create_window.c $(CFLAGS) -o create_window $(MFLAGS) -lX11
+	@$(CC) src/font_drawing.c $(CFLAGS) -o font_drawing $(MFLAGS) -lX11 
+	@$(CC) src/draw_rect.c $(LIBGL) $(CFLAGS) -o draw_rect $(MFLAGS) -lX11 -lm
 
 clean:
 	@$(RM) $(EXAMPLES)
 
 simple_window:
 	@$(RM) $@
-	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) -o $@ $(MFLAGS) -lX11
 	@./$@
 
 event_handling:
 	@$(RM) $@
-	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) -o $@ $(MFLAGS) -lX11
 	@./$@
 
 create_window:
 	@$(RM) $@
-	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) -o $@ $(MFLAGS) -lX11
 	@./$@
 
 font_drawing:
 	@$(RM) $@
-	@$(CC) src/$@.c $(CFLAGS) $(MFLAGS) -lX11 -o $@
+	@$(CC) src/$@.c $(CFLAGS) -o $@ $(MFLAGS) -lX11
 	@./$@
 
-draw_square:
+draw_rect:
 	@$(RM) $@
-	@$(CC) src/$@.c $(LIBGL) $(CFLAGS) $(MFLAGS) -lX11 -o $@ -lm
+	@$(CC) src/$@.c $(LIBGL) $(CFLAGS) -o draw_rect $(MFLAGS) -lX11 -lm
 	@./$@
 
 .PHONY: all build clean $(EXAMPLES)

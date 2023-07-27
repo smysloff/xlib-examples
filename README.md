@@ -62,10 +62,10 @@ make font_drawing
 Simple example demonstrating basic work with fonts.
 
 
-* ### Draw Square
+* ### Draw Rect
 
 ```sh
-make draw_square
+make draw_rect
 ```
 
 Example in which a rotating rectangle is drawn in a window, which rotation can be controlled using the keys *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
