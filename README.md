@@ -71,6 +71,15 @@ make draw_rect
 Example in which a rotating rectangle is drawn in a window, which rotation can be controlled using the keys *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
 
 
+* ### Dodger Game
+
+```sh
+make dodger_game
+```
+
+Simple game where you have to dodge hordes of bloodthirsty squares. Control is done using arrow keys or *WASD*.
+
+
 ## Useful links
 * [Xorg Documentation](https://www.x.org/releases/current/doc/index.html)
 * [Tronche's The Xlib Programming Manual](https://tronche.com/gui/x/xlib/)

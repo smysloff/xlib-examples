@@ -7,7 +7,8 @@ EXAMPLES := simple_window \
 	event_handling \
 	create_window \
 	font_drawing \
-	draw_rect
+	draw_rect \
+	dodger_game
 
 all: clean build
 
@@ -17,6 +18,7 @@ build: clean
 	@$(CC) src/create_window.c $(CFLAGS) -o create_window $(MFLAGS) -lX11
 	@$(CC) src/font_drawing.c $(CFLAGS) -o font_drawing $(MFLAGS) -lX11 
 	@$(CC) src/draw_rect.c $(LIBGL) $(CFLAGS) -o draw_rect $(MFLAGS) -lX11 -lm
+	@$(CC) src/dodger_game.c $(LIBGL) $(CFLAGS) -o dodger_game $(MFLAGS) -lX11
 
 clean:
 	@$(RM) $(EXAMPLES)
@@ -43,7 +45,12 @@ font_drawing:
 
 draw_rect:
 	@$(RM) $@
-	@$(CC) src/$@.c $(LIBGL) $(CFLAGS) -o draw_rect $(MFLAGS) -lX11 -lm
+	@$(CC) src/$@.c $(LIBGL) $(CFLAGS) -o $@ $(MFLAGS) -lX11 -lm
+	@./$@
+
+dodger_game:
+	@$(RM) $@
+	@$(CC) src/$@.c $(LIBGL) $(CFLAGS) -o $@ $(MFLAGS) -lX11
 	@./$@
 
 .PHONY: all build clean $(EXAMPLES)

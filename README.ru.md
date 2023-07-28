@@ -71,6 +71,15 @@ make draw_rect
 Пример, в котором в окне рисуется вращающийся прямоугольник, вращением которого можно управлять клавишами *A*, *D*, *Left Arrow*, *Right Arrow*, *Space*.
 
 
+* ### Dodger Game
+
+```sh
+make dodger_game
+```
+
+Простенькая игра, в которой необходимо уклоняться от орды кровожадных квадратиков. Управление осуществляется при помощи стрелок или *WASD*.
+
+
 ## Полезные ссылки
 * [Xorg Documentation](https://www.x.org/releases/current/doc/index.html)
 * [Tronche's The Xlib Programming Manual](https://tronche.com/gui/x/xlib/)

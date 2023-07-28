@@ -93,8 +93,10 @@ static void ExposeHandler(void)
   GL_SetWindowVisible();
 }
 
-static void KeyPressHandler(unsigned keycode)
+static void KeyPressHandler(XKeyEvent* event)
 {
+  unsigned keycode = event->keycode;
+
   if (keycode == KEY_ESCAPE)
     GL.loop = 0;
 
@@ -111,8 +113,10 @@ static void KeyPressHandler(unsigned keycode)
     rect.controls.any = 1;
 }
 
-static void KeyReleaseHandler(unsigned keycode)
+static void KeyReleaseHandler(XKeyEvent* event)
 {
+  unsigned keycode = event->keycode;
+
   if (keycode == KEY_A || keycode == KEY_LEFT)
     rect.controls.left = 0;
 
@@ -155,7 +159,6 @@ static void UpdateState(void)
 
 static void RenderFrame(void)
 {
-  GL_ClearWindow();
   Rect_Draw(&rect);
 }
 

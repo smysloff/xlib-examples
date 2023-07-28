@@ -103,17 +103,50 @@ void GL_Loop(void (*UpdateState)(void), void (*RenderFrame)(void))
       XNextEvent(GL.display, &GL.event);
       switch (GL.event.type)
       {
-        case Expose: GL.ExposeHandler(); break;
-        case KeyPress: GL.KeyPressHandler(GL.event.xkey.keycode); break;
-        case KeyRelease: GL.KeyReleaseHandler(GL.event.xkey.keycode); break;
+        case Expose:
+        {
+          if (GL.ExposeHandler != NULL)
+            GL.ExposeHandler();
+          break;
+        }
+
+        case KeyPress:
+        {
+          if (GL.KeyPressHandler)
+            GL.KeyPressHandler(&GL.event.xkey);
+          break;
+        }
+
+        case KeyRelease:
+        {
+          if (GL.KeyReleaseHandler)
+            GL.KeyReleaseHandler(&GL.event.xkey);
+          break;
+        }
+
+        case ButtonPress:
+        {
+          if (GL.ButtonPressHandler)
+            GL.ButtonPressHandler(&GL.event.xbutton);
+          break;
+        }
+
+        case ButtonRelease:
+        {
+          if (GL.ButtonReleaseHandler)
+            GL.ButtonReleaseHandler(&GL.event.xbutton);
+          break;
+        }
+
       }
     }
 
     if (!GL_UpdateClock()) continue;
     if (!GL_UpdateFPS()) continue;
 
-    UpdateState();
-    RenderFrame();
+    GL_ClearWindow();
+    if (UpdateState != NULL) UpdateState();
+    if (RenderFrame != NULL) RenderFrame();
     GL_DrawFPS();
 	}
 }
@@ -159,14 +192,24 @@ void GL_SetExposeHandler(void (*handler)(void))
   GL.ExposeHandler = handler;
 }
 
-void GL_SetKeyPressHandler(void (*handler)(unsigned keycode))
+void GL_SetKeyPressHandler(void (*handler)(XKeyEvent* event))
 {
   GL.KeyPressHandler = handler;
 }
 
-void GL_SetKeyReleaseHandler(void (*handler)(unsigned keycode))
+void GL_SetKeyReleaseHandler(void (*handler)(XKeyEvent* event))
 {
   GL.KeyReleaseHandler = handler;
+}
+
+void GL_SetButtonPressHandler(void (*handler)(XButtonEvent* event))
+{
+  GL.ButtonPressHandler = handler;
+}
+
+void GL_SetButtonReleaseHandler(void (*handler)(XButtonEvent* event))
+{
+  GL.ButtonReleaseHandler = handler;
 }
 
 void GL_SetFrameRate(unsigned long frame_rate)
@@ -229,4 +272,9 @@ void GL_DrawLines(GL_Point* points, int count)
 void GL_DrawRectangle(int x, int y, unsigned width, unsigned height)
 {
   XDrawRectangle(GL.display, GL.window, GL.gc, x, y, width, height);
+}
+
+void GL_FillRectangle(int x, int y, unsigned width, unsigned height)
+{
+  XFillRectangle(GL.display, GL.window, GL.gc, x, y, width, height);
 }

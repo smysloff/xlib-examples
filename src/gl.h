@@ -64,8 +64,10 @@ typedef struct GL_t
   unsigned loop;
   unsigned hidden;
   void (*ExposeHandler)(void);
-  void (*KeyPressHandler)(unsigned keycode);
-  void (*KeyReleaseHandler)(unsigned keycode);
+  void (*KeyPressHandler)(XKeyEvent* event);
+  void (*KeyReleaseHandler)(XKeyEvent* event);
+  void (*ButtonPressHandler)(XButtonEvent* event);
+  void (*ButtonReleaseHandler)(XButtonEvent* event);
   void (*UpdateState)(void);
   void (*RenderFrame)(void);
 } GL_t;
@@ -100,8 +102,10 @@ void GL_CreateWindow(
   unsigned short width, unsigned short height, GL_Color background_color);
 
 void GL_SetExposeHandler(void (*handler)(void));
-void GL_SetKeyPressHandler(void (*handler)(unsigned keycode));
-void GL_SetKeyReleaseHandler(void (*handler)(unsigned keycode));
+void GL_SetKeyPressHandler(void (*handler)(XKeyEvent* event));
+void GL_SetKeyReleaseHandler(void (*handler)(XKeyEvent* event));
+void GL_SetButtonPressHandler(void (*handler)(XButtonEvent* event));
+void GL_SetButtonReleaseHandler(void (*handler)(XButtonEvent* event));
 
 void GL_SetFrameRate(unsigned long frame_rate);
 void GL_SetFont(const char* fontname);
@@ -117,5 +121,7 @@ void GL_DrawFPS(void);
 void GL_DrawLine(int x1, int y1, int x2, int y2);
 void GL_DrawLines(GL_Point* points, int count);
 void GL_DrawRectangle(int x, int y, unsigned width, unsigned height);
+//void GL_DrawRectangles()
+void GL_FillRectangle(int x, int y, unsigned width, unsigned height);
 
 #endif
