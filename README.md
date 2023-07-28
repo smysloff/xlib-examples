@@ -17,7 +17,7 @@ Code examples for simple applications using **Xlib** to work with windows on Uni
 **Xlib (X Window System library)** is a library that is part of the **X Window System** and implements **X11**. It provides access to low-level graphics system functions, allowing applications to work directly with window display and screen graphics content.
 
 
-#Code Examples
+# Code Examples
 
 Here are some examples of how to use the **Xlib library**. These examples gradually reveal the basic concepts of working with a graphics server and solve typical tasks of building a graphical application.
 
