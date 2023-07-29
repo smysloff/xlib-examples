@@ -14,6 +14,7 @@
 
 #include "gl.h"
 #include <X11/X.h>
+#include <X11/Xlib.h>
 
 GL_t GL;
 
@@ -138,6 +139,13 @@ void GL_Loop(void (*UpdateState)(void), void (*RenderFrame)(void))
           break;
         }
 
+        case ClientMessage:
+        {
+          if ((Atom) GL.event.xclient.data.l[0] == GL.atoms.delete_window)
+            GL_StopLoop();
+          break;
+        }
+
       }
     }
 
@@ -183,6 +191,9 @@ void GL_CreateWindow(
   (background_color == GL.color.black)
     ? GL_SetForeground(GL.color.white)
     : GL_SetForeground(GL.color.black);
+
+  GL.atoms.delete_window = XInternAtom(GL.display, "WM_DELETE_WINDOW", False);
+  XSetWMProtocols(GL.display, GL.window, &GL.atoms.delete_window, 1);
 
   XMapWindow(GL.display, GL.window);
 }

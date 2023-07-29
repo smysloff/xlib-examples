@@ -49,6 +49,11 @@ typedef struct GL_FPS
   char text[32];
 } GL_FPS;
 
+typedef struct Atoms
+{
+  Atom delete_window;
+} Atoms;
+
 typedef struct GL_t
 {
   Display* display;
@@ -70,6 +75,7 @@ typedef struct GL_t
   void (*ButtonReleaseHandler)(XButtonEvent* event);
   void (*UpdateState)(void);
   void (*RenderFrame)(void);
+  Atoms atoms;
 } GL_t;
 
 extern GL_t GL;
