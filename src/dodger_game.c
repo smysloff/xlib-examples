@@ -15,9 +15,9 @@
 #include "gl.h"
 #include <time.h>
 
+const char* restrict WINDOW_TITLE  = "Battle Town";
 const unsigned short WINDOW_WIDTH  = 721;
 const unsigned short WINDOW_HEIGHT = 401;
-const char* restrict WINDOW_TITLE  = "Battle Town";
 const unsigned long  FRAME_RATE    = 60;
 const int            ENTITY_SIZE   = 20;
 
@@ -267,6 +267,7 @@ int main(void)
   GL_CreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GL.color.black);
   GL_SetWindowTitle(WINDOW_TITLE);
   GL_SetFrameRate(FRAME_RATE);
+  GL_SetWindowFixed();
   GL_SetFont("10x20");
 
   GL_SetExposeHandler(ExposeHandler);

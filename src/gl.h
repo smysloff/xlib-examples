@@ -17,6 +17,7 @@
 
 #include "gl_keys.h"
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
@@ -120,6 +121,7 @@ void GL_SetWindowTitle(const char* title);
 void GL_ClearWindow(void);
 void GL_SetWindowVisible(void);
 void GL_SetWindowHidden(void);
+void GL_SetWindowFixed(void);
 
 void GL_DrawText(const char* text, int x, int y);
 void GL_DrawFPS(void);

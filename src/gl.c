@@ -13,8 +13,8 @@
 // ==================================================================== //
 
 #include "gl.h"
-#include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 GL_t GL;
 
@@ -258,6 +258,18 @@ void GL_SetWindowVisible(void)
 void GL_SetWindowHidden(void)
 {
   GL.hidden = 1;
+}
+
+void GL_SetWindowFixed(void)
+{
+  XSizeHints hints;
+  XWindowAttributes attributes;
+
+  XGetWindowAttributes(GL.display, GL.window, &attributes);
+  hints.flags = PMinSize | PMaxSize;
+  hints.min_width = hints.max_width = attributes.width;
+  hints.min_height = hints.max_height = attributes.height;
+  XSetWMNormalHints(GL.display, GL.window, &hints);
 }
 
 void GL_DrawText(const char* text, int x, int y)
