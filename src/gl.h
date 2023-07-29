@@ -39,6 +39,7 @@ typedef struct GL_Clock
 {
   unsigned long frame_rate;
   unsigned long frame_time;
+  GL_Time start;
   GL_Time previous;
   GL_Time current;
 } GL_Clock;
@@ -131,7 +132,6 @@ void GL_ClearWindow(void);
 void GL_DrawLine(int x1, int y1, int x2, int y2);
 void GL_DrawLines(GL_Point* points, int count);
 void GL_DrawRectangle(int x, int y, unsigned width, unsigned height);
-//void GL_DrawRectangles()
 void GL_FillRectangle(int x, int y, unsigned width, unsigned height);
 
 #endif

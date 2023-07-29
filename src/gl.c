@@ -42,7 +42,8 @@ static unsigned long GL_UpdateFPS(void)
 
 static void GL_StartClock(void)
 {
-  clock_gettime(CLOCK_MONOTONIC, &GL.time.previous);
+  clock_gettime(CLOCK_MONOTONIC, &GL.time.start);
+  GL.time.previous = GL.time.start;
 }
 
 static unsigned long GL_UpdateClock(void)

@@ -13,9 +13,11 @@
 // ==================================================================== //
 
 #include "gl.h"
+#include <X11/Xlib.h>
+#include <stdio.h>
 #include <time.h>
 
-#define WINDOW_TITLE  "Battle Town"
+#define WINDOW_TITLE  "Dodger Game"
 #define WINDOW_WIDTH  721
 #define WINDOW_HEIGHT 401
 #define FRAME_RATE    60
@@ -30,12 +32,12 @@
 #define COLOR_BLUE    0xFF3333AA
 #define COLOR_GRAY    0xFF333333
 
-const unsigned short INNER_WIDTH  = WINDOW_WIDTH - 1;
-const unsigned short INNER_HEIGHT = WINDOW_HEIGHT - 1;
-const unsigned short HALF_WIDTH   = INNER_WIDTH / 2;
-const unsigned short HALF_HEIGHT  = INNER_HEIGHT / 2;
-const int            HALF_SIZE    = ENTITY_SIZE / 2;
-const unsigned short AGGRO_RADIUS = ENTITY_SIZE * AGGRO_SIZE;
+static const unsigned short INNER_WIDTH  = WINDOW_WIDTH - 1;
+static const unsigned short INNER_HEIGHT = WINDOW_HEIGHT - 1;
+static const unsigned short HALF_WIDTH   = INNER_WIDTH / 2;
+static const unsigned short HALF_HEIGHT  = INNER_HEIGHT / 2;
+static const int            HALF_SIZE    = ENTITY_SIZE / 2;
+static const unsigned short AGGRO_RADIUS = ENTITY_SIZE * AGGRO_SIZE;
 
 typedef struct Controls
 {
@@ -50,7 +52,7 @@ typedef struct Soldier
 {
   int x, y;
   int size;
-  int speed; // double ?
+  int speed;
   GL_Color color;
   int mov_x, mov_y;
   unsigned stop;
@@ -59,6 +61,8 @@ typedef struct Soldier
 static Controls controls;
 static Soldier player;
 static Soldier enemies[8];
+static long seconds;
+static char seconds_text[32];
 
 static void Grid_draw(GL_Color color, unsigned cell_size)
 {
@@ -89,34 +93,6 @@ static void Player_init()
   player.size = ENTITY_SIZE;
   player.speed = PLAYER_SPEED;
   player.color = COLOR_GREEN;
-}
-
-static void Enemies_init()
-{
-  GL_Point positions[8] = {
-    { ENTITY_SIZE, ENTITY_SIZE },
-    { INNER_WIDTH - ENTITY_SIZE, ENTITY_SIZE },
-    { INNER_WIDTH - ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
-    { ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
-
-    { HALF_WIDTH, ENTITY_SIZE },
-    { INNER_WIDTH - ENTITY_SIZE, HALF_HEIGHT },
-    { HALF_WIDTH, INNER_HEIGHT - ENTITY_SIZE },
-    { ENTITY_SIZE, HALF_HEIGHT }
-  };
-
-  size_t count = GetSizeOfArray(enemies);
-
-  for (register size_t i = 0; i < count; ++i)
-  {
-    enemies[i].size = ENTITY_SIZE;
-    enemies[i].speed = ENEMY_SPEED;
-    enemies[i].color = COLOR_BLUE;
-    enemies[i].x = positions[i].x;
-    enemies[i].y = positions[i].y;
-    enemies[i].mov_x = positions[i].x;
-    enemies[i].mov_y = positions[i].y;
-  }
 }
 
 static void Player_update()
@@ -151,6 +127,39 @@ static void Player_update()
     if (player.y > player.mov_y) player.y -= player.speed;
   }
 
+}
+
+static void Player_draw()
+{
+  Soldier_draw(&player);
+}
+
+static void Enemies_init()
+{
+  GL_Point positions[8] = {
+    { ENTITY_SIZE, ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
+    { ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
+
+    { HALF_WIDTH, ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, HALF_HEIGHT },
+    { HALF_WIDTH, INNER_HEIGHT - ENTITY_SIZE },
+    { ENTITY_SIZE, HALF_HEIGHT }
+  };
+
+  size_t count = GetSizeOfArray(enemies);
+
+  for (register size_t i = 0; i < count; ++i)
+  {
+    enemies[i].size = ENTITY_SIZE;
+    enemies[i].speed = ENEMY_SPEED;
+    enemies[i].color = COLOR_BLUE;
+    enemies[i].x = positions[i].x;
+    enemies[i].y = positions[i].y;
+    enemies[i].mov_x = positions[i].x;
+    enemies[i].mov_y = positions[i].y;
+  }
 }
 
 static void Enemies_update()
@@ -192,11 +201,6 @@ static void Enemies_update()
   }
 }
 
-static void Player_draw()
-{
-  Soldier_draw(&player);
-}
-
 static void Enemies_draw()
 {
   size_t count = GetSizeOfArray(enemies);
@@ -234,8 +238,7 @@ static void KeyPressHandler(XKeyEvent* event)
       controls.right = 1; break;
   }
 
-  if (controls.up || controls.down
-      || controls.left || controls.right)
+  if (controls.up || controls.down || controls.left || controls.right)
     controls.any = 1;
 }
 
@@ -260,8 +263,7 @@ static void KeyReleaseHandler(XKeyEvent* event)
       controls.right = 0; break;
   }
 
-  if (!controls.up && !controls.down
-      && !controls.left && !controls.right)
+  if (!controls.up && !controls.down && !controls.left && !controls.right)
     controls.any = 0;
 }
 
@@ -277,10 +279,36 @@ static void ButtonReleaseHandler(XButtonEvent* event)
   (void) event;
 }
 
+static void Timer_update()
+{
+  if (!player.stop)
+  {
+    seconds = GL.time.current.tv_sec - GL.time.start.tv_sec;
+    snprintf(seconds_text, GetSizeOfArray(seconds_text), "%ld sec", seconds);
+  }
+  GL_DrawText(seconds_text, 50, 20);
+}
+
 static void UpdateState(void)
 {
   Player_update();
   Enemies_update();
+  Timer_update();
+
+  if (player.stop)
+  {
+    const char text1[10] = "GAME OVER";
+    const char text2[10] = "PRESS ESC";
+
+    GL_SetForeground(GL.color.white);
+    GL_FillRectangle(HALF_WIDTH - 80, HALF_HEIGHT - 40, 160, 80);
+
+    GL_SetForeground(GL.color.black);
+    GL_DrawText(text1, HALF_WIDTH - 45, HALF_HEIGHT - 3);
+    GL_DrawText(text2, HALF_WIDTH - 45, HALF_HEIGHT + 17);
+
+    GL_SetForeground(GL.color.white);
+  }
 }
 
 static void RenderFrame(void)
