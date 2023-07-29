@@ -118,14 +118,16 @@ void GL_SetFrameRate(unsigned long frame_rate);
 void GL_SetFont(const char* fontname);
 void GL_SetForeground(GL_Color color);
 void GL_SetWindowTitle(const char* title);
-void GL_ClearWindow(void);
 void GL_SetWindowVisible(void);
 void GL_SetWindowHidden(void);
 void GL_SetWindowFixed(void);
 
+void GL_GetWindowSize(unsigned short* width, unsigned short* height);
+
 void GL_DrawText(const char* text, int x, int y);
 void GL_DrawFPS(void);
 
+void GL_ClearWindow(void);
 void GL_DrawLine(int x1, int y1, int x2, int y2);
 void GL_DrawLines(GL_Point* points, int count);
 void GL_DrawRectangle(int x, int y, unsigned width, unsigned height);

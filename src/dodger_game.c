@@ -15,12 +15,27 @@
 #include "gl.h"
 #include <time.h>
 
-const char* restrict WINDOW_TITLE  = "Battle Town";
-const unsigned short WINDOW_WIDTH  = 721;
-const unsigned short WINDOW_HEIGHT = 401;
-const unsigned long  FRAME_RATE    = 60;
-const int            ENTITY_SIZE   = 20;
+#define WINDOW_TITLE  "Battle Town"
+#define WINDOW_WIDTH  721
+#define WINDOW_HEIGHT 401
+#define FRAME_RATE    60
 
+#define ENTITY_SIZE   20
+#define PLAYER_SPEED  2
+#define ENEMY_SPEED   1
+#define AGGRO_SIZE    8
+
+#define COLOR_RED     0xFFFF0000
+#define COLOR_GREEN   0xFF11EE11
+#define COLOR_BLUE    0xFF3333AA
+#define COLOR_GRAY    0xFF333333
+
+const unsigned short INNER_WIDTH  = WINDOW_WIDTH - 1;
+const unsigned short INNER_HEIGHT = WINDOW_HEIGHT - 1;
+const unsigned short HALF_WIDTH   = INNER_WIDTH / 2;
+const unsigned short HALF_HEIGHT  = INNER_HEIGHT / 2;
+const int            HALF_SIZE    = ENTITY_SIZE / 2;
+const unsigned short AGGRO_RADIUS = ENTITY_SIZE * AGGRO_SIZE;
 
 typedef struct Controls
 {
@@ -28,6 +43,7 @@ typedef struct Controls
   unsigned down;
   unsigned left;
   unsigned right;
+  unsigned any;
 } Controls;
 
 typedef struct Soldier
@@ -49,55 +65,53 @@ static void Grid_draw(GL_Color color, unsigned cell_size)
   GL_SetForeground(color);
 
   for (register unsigned x = 0; x < WINDOW_WIDTH; x += cell_size)
-    GL_DrawLine(x, 0, x, WINDOW_HEIGHT - 1);
+    GL_DrawLine(x, 0, x, INNER_HEIGHT);
 
   for (register unsigned y = 0; y < WINDOW_HEIGHT; y += cell_size)
-    GL_DrawLine(0, y, WINDOW_WIDTH - 1, y);
+    GL_DrawLine(0, y, INNER_WIDTH, y);
   
   GL_SetForeground(GL.color.white);
 }
 
 static void Soldier_draw(Soldier* soldier)
 {
-  int hSize = soldier->size / 2;
   GL_SetForeground(soldier->color);
   GL_FillRectangle(
-    soldier->x - hSize, soldier->y - hSize,
+    soldier->x - HALF_SIZE, soldier->y - HALF_SIZE,
     soldier->size, soldier->size);
   GL_SetForeground(GL.color.white);
 }
 
 static void Player_init()
 {
-  player.x = WINDOW_WIDTH / 2;
-  player.y = WINDOW_HEIGHT / 2;
+  player.x = player.mov_x = HALF_WIDTH;
+  player.y = player.mov_y = HALF_HEIGHT;
   player.size = ENTITY_SIZE;
-  player.speed = 2;
-  player.color = 0xFF11EE11; // => 0x11EE11 or "#11ee11" ?
+  player.speed = PLAYER_SPEED;
+  player.color = COLOR_GREEN;
 }
 
 static void Enemies_init()
 {
   GL_Point positions[8] = {
     { ENTITY_SIZE, ENTITY_SIZE },
-    { (WINDOW_WIDTH - 1) - ENTITY_SIZE, ENTITY_SIZE },
-    { (WINDOW_WIDTH - 1) - ENTITY_SIZE, (WINDOW_HEIGHT - 1) - ENTITY_SIZE },
-    { ENTITY_SIZE, (WINDOW_HEIGHT - 1) - ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
+    { ENTITY_SIZE, INNER_HEIGHT - ENTITY_SIZE },
 
-    { (WINDOW_WIDTH - 1) / 2, ENTITY_SIZE },
-    { (WINDOW_WIDTH - 1) - ENTITY_SIZE, (WINDOW_HEIGHT - 1) / 2 },
-    { (WINDOW_WIDTH - 1) / 2, (WINDOW_HEIGHT - 1) - ENTITY_SIZE },
-    { ENTITY_SIZE, (WINDOW_HEIGHT - 1) / 2 }
-
+    { HALF_WIDTH, ENTITY_SIZE },
+    { INNER_WIDTH - ENTITY_SIZE, HALF_HEIGHT },
+    { HALF_WIDTH, INNER_HEIGHT - ENTITY_SIZE },
+    { ENTITY_SIZE, HALF_HEIGHT }
   };
 
   size_t count = GetSizeOfArray(enemies);
 
   for (register size_t i = 0; i < count; ++i)
   {
-    enemies[i].size = 20;
-    enemies[i].speed = 1;
-    enemies[i].color = 0xFF3333AA;
+    enemies[i].size = ENTITY_SIZE;
+    enemies[i].speed = ENEMY_SPEED;
+    enemies[i].color = COLOR_BLUE;
     enemies[i].x = positions[i].x;
     enemies[i].y = positions[i].y;
     enemies[i].mov_x = positions[i].x;
@@ -109,26 +123,39 @@ static void Player_update()
 {
   if (player.stop) return;
 
-  int hSize = player.size / 2;
+  if (controls.any)
+  {
+    if (controls.left) player.x -= player.speed;
+    if (controls.right) player.x += player.speed;
 
-  if (controls.left) player.x -= player.speed;
-  if (controls.right) player.x += player.speed;
+    if (controls.up) player.y -= player.speed;
+    if (controls.down) player.y += player.speed;
 
-  if (controls.up) player.y -= player.speed;
-  if (controls.down) player.y += player.speed;
+    if (player.x - HALF_SIZE < 0) player.x = HALF_SIZE;
+    if (player.x + HALF_SIZE > INNER_WIDTH)
+      player.x = INNER_WIDTH - HALF_SIZE;
 
-  if (player.x - hSize < 0) player.x = hSize;
-  if (player.x + hSize > WINDOW_WIDTH - 1) player.x = WINDOW_WIDTH - 1 - hSize;
+    if (player.y - HALF_SIZE < 0) player.y = HALF_SIZE;
+    if (player.y + HALF_SIZE > INNER_HEIGHT)
+      player.y = INNER_HEIGHT - HALF_SIZE;
 
-  if (player.y - hSize < 0) player.y = hSize;
-  if (player.y + hSize > WINDOW_HEIGHT - 1) player.y = WINDOW_HEIGHT - 1 - hSize;
+    player.mov_x = player.x;
+    player.mov_y = player.y;
+  }
+  else
+  {
+    if (player.x < player.mov_x) player.x += player.speed;
+    if (player.x > player.mov_x) player.x -= player.speed;
+
+    if (player.y < player.mov_y) player.y += player.speed;
+    if (player.y > player.mov_y) player.y -= player.speed;
+  }
 
 }
 
 static void Enemies_update()
 {
   size_t count = GetSizeOfArray(enemies);
-  int dist = enemies[0].size * 10;
 
   for (register size_t i = 0; i < count; ++i)
   {
@@ -142,19 +169,19 @@ static void Enemies_update()
     }
 
     if (
-      (abs(player.x - e->x) < dist)
-      && (abs(player.y - e->y) < dist)
+      (abs(player.x - e->x) < AGGRO_RADIUS)
+      && (abs(player.y - e->y) < AGGRO_RADIUS)
     ) {
       e->mov_x = player.x;
       e->mov_y = player.y;
-      e->color = 0xFFFF0000;
+      e->color = COLOR_RED;
     }
 
     if (e->x == e->mov_x && e->y == e->mov_y)
     {
       e->mov_x = (rand() % (WINDOW_WIDTH - e->size * 2)) + e->size;
       e->mov_y = (rand() % (WINDOW_HEIGHT - e->size * 2)) + e->size;
-      e->color = 0xFF3333AA;
+      e->color = COLOR_BLUE;
     }
 
     if (e->x < e->mov_x) e->x += e->speed;
@@ -206,6 +233,10 @@ static void KeyPressHandler(XKeyEvent* event)
     case KEY_RIGHT:
       controls.right = 1; break;
   }
+
+  if (controls.up || controls.down
+      || controls.left || controls.right)
+    controls.any = 1;
 }
 
 static void KeyReleaseHandler(XKeyEvent* event)
@@ -228,18 +259,22 @@ static void KeyReleaseHandler(XKeyEvent* event)
     case KEY_RIGHT:
       controls.right = 0; break;
   }
+
+  if (!controls.up && !controls.down
+      && !controls.left && !controls.right)
+    controls.any = 0;
 }
 
 
 static void ButtonPressHandler(XButtonEvent* event)
 {
-  printf("button %d (%d %d)\n", event->button, event->x, event->y);
+  player.mov_x = event->x;
+  player.mov_y = event->y;
 }
 
 static void ButtonReleaseHandler(XButtonEvent* event)
 {
   (void) event;
-  //printf("button %d (%d %d)\n", event->button, event->x, event->y);
 }
 
 static void UpdateState(void)
@@ -250,7 +285,7 @@ static void UpdateState(void)
 
 static void RenderFrame(void)
 {
-  Grid_draw(0xFF333333, 20);
+  Grid_draw(COLOR_GRAY, ENTITY_SIZE);
   Player_draw();
   Enemies_draw();
 }
